@@ -1,0 +1,804 @@
+{
+  "info": {
+    "name": "BankApplication - Complete API Collection",
+    "description": "API test collection for Bank Application - Includes Client and Account microservices.\n\nAuthor: George Perez\nEmail: jorge.perez01epn@gmail.com\nVersion: 1.0\nCreated: September 2025\n\nThis collection contains all endpoints for testing the Bank Application microservices architecture, including Client management, Account management, Transaction processing, and comprehensive reporting (F4).\n\nFeatures:\n- Complete CRUD operations for Clients and Accounts\n- Transaction management (Deposits/Withdrawals)\n- Bank statement reports with date filtering\n- Error handling test cases\n- Automated tests and environment variables",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "event": [],
+  "variable": [
+    {
+      "key": "base_url_client",
+      "value": "http://localhost:8001",
+      "type": "string"
+    },
+    {
+      "key": "base_url_account",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "collection_author",
+      "value": "George Perez",
+      "type": "string",
+      "description": "Author of this Postman collection"
+    }
+  ],
+  "item": [
+    {
+      "name": "Client Microservice",
+      "item": [
+        {
+          "name": "1. Client Management",
+          "item": [
+            {
+              "name": "GET All Clients",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test('Response is an array', function () {",
+                      "    pm.expect(pm.response.json()).to.be.an('array');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_client}}/api/clients",
+                  "host": ["{{base_url_client}}"],
+                  "path": ["api", "clients"]
+                },
+                "description": "Retrieve all registered clients"
+              },
+              "response": []
+            },
+            {
+              "name": "POST Create Client",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 201', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "pm.test('Response has client data', function () {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson).to.have.property('name');",
+                      "    pm.expect(responseJson).to.have.property('dni');",
+                      "    pm.expect(responseJson).to.have.property('id');",
+                      "});",
+                      "",
+                      "// Save client ID for other requests",
+                      "if (pm.response.code === 201) {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.environment.set('client_id', responseJson.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"George Perez\",\n  \"dni\": \"1803333333\",\n  \"gender\": \"M\",\n  \"age\": 25,\n  \"address\": \"Quito\",\n  \"phone\": \"+593987654321\",\n  \"password\": \"BankTest123$\",\n  \"active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url_client}}/api/clients",
+                  "host": ["{{base_url_client}}"],
+                  "path": ["api", "clients"]
+                },
+                "description": "Create a new client"
+              },
+              "response": []
+            },
+            {
+              "name": "GET Client by ID",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test('Response has client data', function () {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson).to.have.property('name');",
+                      "    pm.expect(responseJson).to.have.property('dni');",
+                      "    pm.expect(responseJson).to.have.property('id');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_client}}/api/clients/{{client_id}}",
+                  "host": ["{{base_url_client}}"],
+                  "path": ["api", "clients", "{{client_id}}"]
+                },
+                "description": "Get client by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "PUT Update Client",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test('Response has updated data', function () {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson).to.have.property('name');",
+                      "    pm.expect(responseJson).to.have.property('dni');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": {{client_id}},\n  \"name\": \"George Perez Actualizado\",\n  \"dni\": \"1803333333\",\n  \"gender\": \"M\",\n  \"age\": 26,\n  \"address\": \"Quito - Centro Histórico\",\n  \"phone\": \"+593987654321\",\n  \"password\": \"BankTest123$Updated\",\n  \"active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url_client}}/api/clients/{{client_id}}",
+                  "host": ["{{base_url_client}}"],
+                  "path": ["api", "clients", "{{client_id}}"]
+                },
+                "description": "Update an existing client"
+              },
+              "response": []
+            },
+            {
+              "name": "PATCH Partial Update Client",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test('Response has updated data', function () {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson).to.have.property('phone');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"+593999888777\",\n  \"address\": \"Quito - La Mariscal\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url_client}}/api/clients/{{client_id}}",
+                  "host": ["{{base_url_client}}"],
+                  "path": ["api", "clients", "{{client_id}}"]
+                },
+                "description": "Partially update client (only specific fields)"
+              },
+              "response": []
+            },
+            {
+              "name": "DELETE Client (Soft Delete)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 204', function () {",
+                      "    pm.response.to.have.status(204);",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_client}}/api/clients/{{client_id}}",
+                  "host": ["{{base_url_client}}"],
+                  "path": ["api", "clients", "{{client_id}}"]
+                },
+                "description": "Soft delete client (mark as inactive)"
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Account Microservice",
+      "item": [
+        {
+          "name": "1. Account Management",
+          "item": [
+            {
+              "name": "GET All Accounts",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test('Response is an array', function () {",
+                      "    pm.expect(pm.response.json()).to.be.an('array');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_account}}/api/accounts",
+                  "host": ["{{base_url_account}}"],
+                  "path": ["api", "accounts"]
+                },
+                "description": "Retrieve all bank accounts"
+              },
+              "response": []
+            },
+            {
+              "name": "POST Create Account",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 201', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "pm.test('Response has account data', function () {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson).to.have.property('number');",
+                      "    pm.expect(responseJson).to.have.property('type');",
+                      "    pm.expect(responseJson).to.have.property('initialAmount');",
+                      "});",
+                      "",
+                      "// Save account ID for other requests",
+                      "if (pm.response.code === 201) {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.environment.set('account_id', responseJson.id);",
+                      "    pm.environment.set('account_number', responseJson.number);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"clientId\": {{client_id}},\n  \"number\": \"ACC-001\",\n  \"type\": \"SAVINGS\",\n  \"initialAmount\": 1000.00,\n  \"active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url_account}}/api/accounts",
+                  "host": ["{{base_url_account}}"],
+                  "path": ["api", "accounts"]
+                },
+                "description": "Create a new bank account"
+              },
+              "response": []
+            },
+            {
+              "name": "GET Account by ID",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test('Response has account data', function () {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson).to.have.property('number');",
+                      "    pm.expect(responseJson).to.have.property('type');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_account}}/api/accounts/{{account_id}}",
+                  "host": ["{{base_url_account}}"],
+                  "path": ["api", "accounts", "{{account_id}}"]
+                },
+                "description": "Get account by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "PUT Update Account",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test('Response has updated data', function () {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson).to.have.property('type');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": {{account_id}},\n  \"clientId\": {{client_id}},\n  \"number\": \"{{account_number}}\",\n  \"type\": \"CHECKING\",\n  \"initialAmount\": 1500.00,\n  \"active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url_account}}/api/accounts/{{account_id}}",
+                  "host": ["{{base_url_account}}"],
+                  "path": ["api", "accounts", "{{account_id}}"]
+                },
+                "description": "Update an existing account"
+              },
+              "response": []
+            },
+            {
+              "name": "DELETE Account",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 204', function () {",
+                      "    pm.response.to.have.status(204);",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_account}}/api/accounts/{{account_id}}",
+                  "host": ["{{base_url_account}}"],
+                  "path": ["api", "accounts", "{{account_id}}"]
+                },
+                "description": "Delete account"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "2. Transaction Management",
+          "item": [
+            {
+              "name": "GET All Transactions",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test('Response is an array', function () {",
+                      "    pm.expect(pm.response.json()).to.be.an('array');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_account}}/api/transactions",
+                  "host": ["{{base_url_account}}"],
+                  "path": ["api", "transactions"]
+                },
+                "description": "Retrieve all transactions"
+              },
+              "response": []
+            },
+            {
+              "name": "POST Create Transaction (Deposit)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 201', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "pm.test('Response has transaction data', function () {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson).to.have.property('amount');",
+                      "    pm.expect(responseJson).to.have.property('type');",
+                      "    pm.expect(responseJson).to.have.property('balance');",
+                      "});",
+                      "",
+                      "// Save transaction ID",
+                      "if (pm.response.code === 201) {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.environment.set('transaction_id', responseJson.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"accountId\": {{account_id}},\n  \"type\": \"DEPOSIT\",\n  \"amount\": 500.00\n}"
+                },
+                "url": {
+                  "raw": "{{base_url_account}}/api/transactions",
+                  "host": ["{{base_url_account}}"],
+                  "path": ["api", "transactions"]
+                },
+                "description": "Create a deposit transaction"
+              },
+              "response": []
+            },
+            {
+              "name": "POST Create Transaction (Withdrawal)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 201', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "pm.test('Response has transaction data', function () {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson).to.have.property('amount');",
+                      "    pm.expect(responseJson).to.have.property('type');",
+                      "    pm.expect(responseJson).to.have.property('balance');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"accountId\": {{account_id}},\n  \"type\": \"WITHDRAWAL\",\n  \"amount\": 200.00\n}"
+                },
+                "url": {
+                  "raw": "{{base_url_account}}/api/transactions",
+                  "host": ["{{base_url_account}}"],
+                  "path": ["api", "transactions"]
+                },
+                "description": "Create a withdrawal transaction"
+              },
+              "response": []
+            },
+            {
+              "name": "GET Transaction by ID",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test('Response has transaction data', function () {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson).to.have.property('amount');",
+                      "    pm.expect(responseJson).to.have.property('type');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_account}}/api/transactions/{{transaction_id}}",
+                  "host": ["{{base_url_account}}"],
+                  "path": ["api", "transactions", "{{transaction_id}}"]
+                },
+                "description": "Get transaction by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "GET Account Statement Report",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test('Response has statement data', function () {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson).to.have.property('client');",
+                      "    pm.expect(responseJson).to.have.property('accounts');",
+                      "    pm.expect(responseJson.client).to.have.property('clientName');",
+                      "    pm.expect(responseJson.client).to.have.property('dni');",
+                      "    pm.expect(responseJson.accounts).to.be.an('array');",
+                      "    if (responseJson.accounts.length > 0) {",
+                      "        pm.expect(responseJson.accounts[0]).to.have.property('accountNumber');",
+                      "        pm.expect(responseJson.accounts[0]).to.have.property('transactions');",
+                      "        pm.expect(responseJson.accounts[0].transactions).to.be.an('array');",
+                      "    }",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url_account}}/api/transactions/clients/{{client_id}}/report?dateTransactionStart=2025-01-01&dateTransactionEnd=2025-12-31",
+                  "host": ["{{base_url_account}}"],
+                  "path": [
+                    "api",
+                    "transactions",
+                    "clients",
+                    "{{client_id}}",
+                    "report"
+                  ],
+                  "query": [
+                    {
+                      "key": "dateTransactionStart",
+                      "value": "2025-01-01"
+                    },
+                    {
+                      "key": "dateTransactionEnd",
+                      "value": "2025-12-31"
+                    }
+                  ]
+                },
+                "description": "Generate account statement report for a client within date range"
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Error Cases",
+      "item": [
+        {
+          "name": "Client with Duplicate DNI",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400 (Bad Request)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Error message contains DNI information', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('DNI');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"George Perez Duplicado\",\n  \"dni\": \"1803333333\",\n  \"gender\": \"M\",\n  \"age\": 25,\n  \"address\": \"Quito\",\n  \"phone\": \"+593999888777\",\n  \"password\": \"BankTest123$\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url_client}}/api/clients",
+              "host": ["{{base_url_client}}"],
+              "path": ["api", "clients"]
+            },
+            "description": "Try to create client with duplicate DNI"
+          },
+          "response": []
+        },
+        {
+          "name": "Transaction with Insufficient Balance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400 (Bad Request)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Error message about insufficient balance', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('Saldo no disponible');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountId\": {{account_id}},\n  \"type\": \"WITHDRAWAL\",\n  \"amount\": 99999.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url_account}}/api/transactions",
+              "host": ["{{base_url_account}}"],
+              "path": ["api", "transactions"]
+            },
+            "description": "Try to withdraw more than available balance"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Non-Existent Client",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404 (Not Found)', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Error message about client not found', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('not found');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_client}}/api/clients/99999",
+              "host": ["{{base_url_client}}"],
+              "path": ["api", "clients", "99999"]
+            },
+            "description": "Try to get a client that doesn't exist"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
